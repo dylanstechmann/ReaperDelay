@@ -1,4 +1,4 @@
-const CACHE = "reaper-delay-v1";
+const CACHE = "reaper-delay-v2";
 const ASSETS = [
   "./",
   "./index.html",
