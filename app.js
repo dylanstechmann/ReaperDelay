@@ -212,8 +212,8 @@
     $("end-body").textContent = won
       ? "You walked eight cases without letting the scythe land. Knowledge is the dullest, best weapon."
       : "Proximity hit 100. The ward is gone. Read the ledger and try another night.";
-    $("end-stats").innerHTML =
-      "<b>" + state.years.toFixed(1) + "</b> delay marks · " +
+    const stats = $("end-stats");
+    stats.textContent = state.years.toFixed(1) + " delay marks · " +
       state.saved + " good calls · best ever " + (loadProgress().bestYears || 0).toFixed(1);
     show("end");
   }
@@ -251,22 +251,26 @@
     const root = $("ledger-list");
     root.innerHTML = "";
     if (!list.length) {
-      root.innerHTML = "<p class='muted'>Survive cases to write them here.</p>";
+      const empty = document.createElement("p");
+      empty.className = "muted";
+      empty.textContent = "Survive cases to write them here.";
+      root.appendChild(empty);
     } else {
       list.forEach((f) => {
         const el = document.createElement("article");
-        el.innerHTML = "<div class='type-pill'>" + f.icon + " " + f.type + "</div><strong>" +
-          escapeHtml(f.name) + "</strong><p class='tiny'>" + escapeHtml(f.fact) + "</p>";
+        const pill = document.createElement("div");
+        pill.className = "type-pill";
+        pill.textContent = (f.icon || "") + " " + (f.type || "");
+        const nameEl = document.createElement("strong");
+        nameEl.textContent = f.name || "";
+        const fact = document.createElement("p");
+        fact.className = "tiny";
+        fact.textContent = f.fact || "";
+        el.append(pill, nameEl, fact);
         root.appendChild(el);
       });
     }
     show("ledger");
-  }
-
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, (c) => ({
-      "&": "&", "<": "<", ">": ">", '"': """, "'": "&#39;"
-    }[c]));
   }
 
   async function summonCase() {
@@ -294,20 +298,22 @@
       : "No completed shifts yet.";
   }
 
-  $("btn-begin").addEventListener("click", startShift);
-  $("btn-settings").addEventListener("click", openSettings);
-  $("btn-ledger").addEventListener("click", openLedger);
-  $("btn-how").addEventListener("click", () => {
-    $("how").hidden = !$("how").hidden;
-  });
-  $("btn-continue").addEventListener("click", continueShift);
-  $("btn-ai-note").addEventListener("click", askFootnote);
-  $("btn-again").addEventListener("click", startShift);
-  $("btn-home").addEventListener("click", () => { stopTick(); paintTitle(); show("title"); });
-  $("btn-home-2").addEventListener("click", () => { paintTitle(); show("title"); });
-  $("btn-home-3").addEventListener("click", () => { paintTitle(); show("title"); });
-  $("btn-save-settings").addEventListener("click", saveSettings);
-  $("btn-summon").addEventListener("click", summonCase);
+  function on(id, fn) {
+    const el = $(id);
+    if (el) el.addEventListener("click", fn);
+  }
+  on("btn-begin", startShift);
+  on("btn-settings", openSettings);
+  on("btn-ledger", openLedger);
+  on("btn-how", () => { const h = $("how"); if (h) h.hidden = !h.hidden; });
+  on("btn-continue", continueShift);
+  on("btn-ai-note", askFootnote);
+  on("btn-again", startShift);
+  on("btn-home", () => { stopTick(); paintTitle(); show("title"); });
+  on("btn-home-2", () => { paintTitle(); show("title"); });
+  on("btn-home-3", () => { paintTitle(); show("title"); });
+  on("btn-save-settings", saveSettings);
+  on("btn-summon", summonCase);
 
   paintTitle();
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
