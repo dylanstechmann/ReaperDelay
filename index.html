@@ -10,10 +10,7 @@
   <meta name="description" content="Educational game: delay the Grim Reaper with evidence-based choices for people, animals, and things." />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='48' font-size='48'%3E%E2%98%A0%EF%B8%8F%3C/text%3E%3C/svg%3E" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=2" />
 </head>
 <body>
   <div class="skyline"></div>
@@ -26,16 +23,15 @@
       </header>
       <div class="panel stack">
         <p id="best-line" class="muted"></p>
-        <button class="btn gold block" id="btn-begin">Begin night shift</button>
+        <button class="btn gold block" id="btn-begin" type="button">Begin night shift</button>
         <div class="row">
-          <button class="btn" id="btn-how">How it works</button>
-          <button class="btn" id="btn-ledger">Ledger</button>
-          <button class="btn" id="btn-settings">AI (optional)</button>
+          <button class="btn" id="btn-how" type="button">How it works</button>
+          <button class="btn" id="btn-ledger" type="button">Ledger</button>
+          <button class="btn" id="btn-settings" type="button">AI (optional)</button>
         </div>
         <div id="how" class="tiny" hidden>
           Eight cases per shift. The Reaper creeps every second. Good answers push the figure back; bad ones invite the cut.
-          Topics are first aid, public health, animal care, and maintenance — real delays, not magic.
-          The game is fully playable offline. A cheap OpenRouter model can add one footnote or invent one extra case. Leave AI off to keep the cost at zero.
+          Topics are first aid, public health, animal care, and maintenance. Leave AI off to keep the cost at zero.
           This is a teaching toy, not medical, veterinary, or engineering advice.
         </div>
       </div>
@@ -74,8 +70,8 @@
         <p class="lesson" id="res-lesson"></p>
         <p class="muted" id="res-fact"></p>
         <p class="ai-note" id="res-ai"></p>
-        <button class="btn" id="btn-ai-note">Ask cheap clerk for a footnote</button>
-        <button class="btn gold block" id="btn-continue">Next on the ledger</button>
+        <button class="btn" id="btn-ai-note" type="button">Ask cheap clerk for a footnote</button>
+        <button class="btn gold block" id="btn-continue" type="button">Next on the ledger</button>
       </div>
     </section>
 
@@ -87,8 +83,8 @@
       </header>
       <div class="panel stack">
         <p id="end-stats" class="gold"></p>
-        <button class="btn gold block" id="btn-again">Another night</button>
-        <button class="btn block" id="btn-home">Title</button>
+        <button class="btn gold block" id="btn-again" type="button">Another night</button>
+        <button class="btn block" id="btn-home" type="button">Title</button>
       </div>
     </section>
 
@@ -105,10 +101,10 @@
         <label>Model
           <select id="or-model"></select>
         </label>
-        <p class="tiny">Prefer free or 7B/8B-class Qwen and DeepSeek models. One short completion per footnote. Do not paste keys into the game source or a public repo.</p>
-        <button class="btn gold" id="btn-save-settings">Save on this device</button>
-        <button class="btn" id="btn-summon">Summon one extra case</button>
-        <button class="btn ghost" id="btn-home-2">Back</button>
+        <p class="tiny">Prefer free or 7B/8B-class Qwen and DeepSeek models. Do not paste keys into the game source or a public repo.</p>
+        <button class="btn gold" id="btn-save-settings" type="button">Save on this device</button>
+        <button class="btn" id="btn-summon" type="button">Summon one extra case</button>
+        <button class="btn ghost" id="btn-home-2" type="button">Back</button>
       </div>
     </section>
 
@@ -117,13 +113,13 @@
         <h2>The ledger</h2>
         <p class="tiny" id="ledger-count"></p>
         <div class="ledger" id="ledger-list"></div>
-        <button class="btn" id="btn-home-3">Back</button>
+        <button class="btn" id="btn-home-3" type="button">Back</button>
       </div>
     </section>
   </main>
   <div class="toast" id="toast" role="status"></div>
-  <script src="content.js"></script>
-  <script src="ai.js"></script>
-  <script src="app.js"></script>
+  <script src="content.js?v=2"></script>
+  <script src="ai.js?v=2"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
