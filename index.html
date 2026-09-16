@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0c0b10" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Reaper Delay" />
+  <title>Reaper Delay</title>
+  <meta name="description" content="Educational game: delay the Grim Reaper with evidence-based choices for people, animals, and things." />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='48' font-size='48'%3E%E2%98%A0%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="skyline"></div>
+  <main class="app">
+    <section id="screen-title" class="screen active">
+      <header class="mast">
+        <div class="mark" aria-hidden="true">⚰️</div>
+        <h1>Reaper Delay</h1>
+        <p class="subtitle">You are the night clerk. People, animals, and things arrive on the ledger. Buy time with knowledge. The scythe is patient; it is not kind.</p>
+      </header>
+      <div class="panel stack">
+        <p id="best-line" class="muted"></p>
+        <button class="btn gold block" id="btn-begin">Begin night shift</button>
+        <div class="row">
+          <button class="btn" id="btn-how">How it works</button>
+          <button class="btn" id="btn-ledger">Ledger</button>
+          <button class="btn" id="btn-settings">AI (optional)</button>
+        </div>
+        <div id="how" class="tiny" hidden>
+          Eight cases per shift. The Reaper creeps every second. Good answers push the figure back; bad ones invite the cut.
+          Topics are first aid, public health, animal care, and maintenance — real delays, not magic.
+          The game is fully playable offline. A cheap OpenRouter model can add one footnote or invent one extra case. Leave AI off to keep the cost at zero.
+          This is a teaching toy, not medical, veterinary, or engineering advice.
+        </div>
+      </div>
+      <footer class="fine">Works in a phone, tablet, or desktop browser. Add to Home Screen for a full-screen icon.</footer>
+    </section>
+
+    <section id="screen-play" class="screen">
+      <div class="hud">
+        <div class="stat">Delay marks <b id="stat-years">0</b></div>
+        <div class="stat">Good calls <b id="stat-saved">0</b></div>
+        <div class="stat">Streak <b id="stat-streak">0</b></div>
+        <div class="stat">Cases left <b id="stat-left">8</b></div>
+      </div>
+      <div class="reaper-wrap" aria-hidden="true">
+        <span class="ward" id="ward-icon">🕯️</span>
+        <div class="lane"><i id="lane-fill"></i></div>
+        <span class="reaper" id="reaper">💀</span>
+      </div>
+      <div class="panel">
+        <div class="case-head">
+          <div class="icon" id="case-icon">🕯️</div>
+          <div>
+            <div class="type-pill" id="case-type">person</div>
+            <h2 id="case-name">Ward</h2>
+          </div>
+        </div>
+        <p class="setup" id="case-setup"></p>
+        <div class="choices" id="choices"></div>
+      </div>
+    </section>
+
+    <section id="screen-resolve" class="screen">
+      <div class="panel stack">
+        <h2 id="res-title">Time bought.</h2>
+        <p class="type-pill" id="res-quality"></p>
+        <p class="lesson" id="res-lesson"></p>
+        <p class="muted" id="res-fact"></p>
+        <p class="ai-note" id="res-ai"></p>
+        <button class="btn" id="btn-ai-note">Ask cheap clerk for a footnote</button>
+        <button class="btn gold block" id="btn-continue">Next on the ledger</button>
+      </div>
+    </section>
+
+    <section id="screen-end" class="screen">
+      <header class="mast">
+        <div class="mark">🕯️</div>
+        <h1 id="end-title">The cut arrived.</h1>
+        <p class="subtitle" id="end-body"></p>
+      </header>
+      <div class="panel stack">
+        <p id="end-stats" class="gold"></p>
+        <button class="btn gold block" id="btn-again">Another night</button>
+        <button class="btn block" id="btn-home">Title</button>
+      </div>
+    </section>
+
+    <section id="screen-settings" class="screen">
+      <div class="panel stack">
+        <h2>Optional cheap AI</h2>
+        <p class="tiny">Off by default. The full game runs with no network model. If you turn this on, the browser talks to OpenRouter with a key that never leaves this device.</p>
+        <label>Enable AI footnotes / extra cases
+          <input type="checkbox" id="or-on" />
+        </label>
+        <label>OpenRouter API key
+          <input id="or-key" type="password" autocomplete="off" placeholder="sk-or-v1-…" />
+        </label>
+        <label>Model
+          <select id="or-model"></select>
+        </label>
+        <p class="tiny">Prefer free or 7B/8B-class Qwen and DeepSeek models. One short completion per footnote. Do not paste keys into the game source or a public repo.</p>
+        <button class="btn gold" id="btn-save-settings">Save on this device</button>
+        <button class="btn" id="btn-summon">Summon one extra case</button>
+        <button class="btn ghost" id="btn-home-2">Back</button>
+      </div>
+    </section>
+
+    <section id="screen-ledger" class="screen">
+      <div class="panel stack">
+        <h2>The ledger</h2>
+        <p class="tiny" id="ledger-count"></p>
+        <div class="ledger" id="ledger-list"></div>
+        <button class="btn" id="btn-home-3">Back</button>
+      </div>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="content.js"></script>
+  <script src="ai.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
