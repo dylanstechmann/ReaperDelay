@@ -1,11 +1,12 @@
-const CACHE = "reaper-delay-v2";
+const CACHE_PREFIX = "reaper-delay-";
+const CACHE = CACHE_PREFIX + "v3";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./app.js",
-  "./ai.js",
-  "./content.js",
+  "./styles.css?v=3",
+  "./app.js?v=3",
+  "./ai.js?v=3",
+  "./content.js?v=3",
   "./manifest.json",
   "./icon.svg"
 ];
@@ -16,7 +17,7 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())
+    caches.keys().then((keys) => Promise.all(keys.filter((k) => k.startsWith(CACHE_PREFIX) && k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())
   );
 });
 

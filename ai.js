@@ -73,14 +73,51 @@ window.RD_AI = (function () {
     const end = raw.lastIndexOf("}");
     if (start < 0 || end < 0) throw new Error("Model did not return JSON.");
     const obj = JSON.parse(raw.slice(start, end + 1));
-    if (!obj.setup || !Array.isArray(obj.choices) || obj.choices.length < 3) {
-      throw new Error("JSON missing fields.");
-    }
-    obj.id = "ai-" + Date.now();
-    obj.type = obj.type || "person";
-    obj.icon = obj.icon || "\ud83d\udd6f\ufe0f";
-    return obj;
+    return { id: "ai-" + Date.now(), ...validateCase(obj) };
   }
 
-  return { MODELS, settings, save, footnote, extraCase };
+  function validateCase(obj) {
+    if (!obj || typeof obj !== "object" || !["person", "animal", "thing"].includes(obj.type)) {
+      throw new Error("Case must have a valid type.");
+    }
+    function text(value, field, limit) {
+      if (typeof value !== "string" || !value.trim() || value.length > limit) {
+        throw new Error("Case has invalid " + field + ".");
+      }
+      return value.trim();
+    }
+    if (!Array.isArray(obj.choices) || obj.choices.length !== 4) {
+      throw new Error("Case must contain exactly four choices.");
+    }
+    const choices = obj.choices.map((choice) => {
+      if (!choice || !["best", "good", "bad", "worst"].includes(choice.quality) ||
+          typeof choice.delay !== "number" || !Number.isFinite(choice.delay)) {
+        throw new Error("Case has invalid choice scoring.");
+      }
+      const positive = choice.quality === "best" || choice.quality === "good";
+      if (positive ? choice.delay < 8 || choice.delay > 28 : choice.delay >= 0 || choice.delay < -100) {
+        throw new Error("Case has out-of-range choice scoring.");
+      }
+      return {
+        text: text(choice.text, "choice text", 500),
+        quality: choice.quality,
+        delay: choice.delay,
+        lesson: text(choice.lesson, "lesson", 1500)
+      };
+    });
+    if (choices.filter((choice) => choice.quality === "best").length !== 1 ||
+        choices.filter((choice) => choice.quality === "good").length !== 1) {
+      throw new Error("Case must contain one best and one good choice.");
+    }
+    return {
+      type: obj.type,
+      icon: obj.icon ? text(obj.icon, "icon", 32) : "\ud83d\udd6f\ufe0f",
+      name: text(obj.name, "name", 150),
+      setup: text(obj.setup, "setup", 1500),
+      fact: text(obj.fact, "fact", 1500),
+      choices
+    };
+  }
+
+  return { MODELS, settings, save, footnote, extraCase, validateCase };
 })();

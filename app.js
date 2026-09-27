@@ -38,7 +38,8 @@
 
   function loadProgress() {
     try {
-      return JSON.parse(localStorage.getItem("rd_progress") || "{}");
+      const progress = JSON.parse(localStorage.getItem("rd_progress") || "{}");
+      return progress && typeof progress === "object" && !Array.isArray(progress) ? progress : {};
     } catch {
       return {};
     }
@@ -81,7 +82,15 @@
     state.seen = 0;
     state.over = false;
     state.deck = shuffle(CASES);
-    const extras = loadProgress().aiCases || [];
+    const savedCases = loadProgress().aiCases;
+    const extras = (Array.isArray(savedCases) ? savedCases : []).flatMap((extra) => {
+      try {
+        if (typeof extra.id !== "string" || !/^ai-\d+$/.test(extra.id)) return [];
+        return [{ id: extra.id, ...window.RD_AI.validateCase(extra) }];
+      } catch {
+        return []; // Older or malformed generated cases must not break a shift.
+      }
+    });
     if (extras.length) state.deck = shuffle(state.deck.concat(extras));
     show("play");
     nextCase();
@@ -118,6 +127,7 @@
   }
 
   function nextCase() {
+    if (state.over) return;
     if (state.seen >= state.shiftGoal) return shiftComplete(true);
     if (!state.deck.length) state.deck = shuffle(CASES);
     state.current = state.deck.pop();
@@ -133,14 +143,15 @@
       const b = document.createElement("button");
       b.className = "choice";
       b.textContent = ch.text;
-      b.addEventListener("click", () => pick(ch, b));
+      b.addEventListener("click", () => pick(ch, c));
       box.appendChild(b);
     });
     paintHud();
   }
 
-  function pick(choice) {
-    if (state.over) return;
+  function pick(choice, caseObj) {
+    if (state.over || caseObj !== state.current || !screens.play.classList.contains("active")) return;
+    Array.from($("choices").children).forEach((button) => { button.disabled = true; });
     state.lastChoice = choice;
     state.seen += 1;
     const delay = choice.delay || 0;
@@ -154,6 +165,7 @@
       bump(-delay);
     }
     unlockFact(state.current);
+    if (state.over) return;
     $("reaper").classList.remove("swing");
     void $("reaper").offsetWidth;
     $("reaper").classList.add("swing");
@@ -188,6 +200,7 @@
   }
 
   function continueShift() {
+    if (state.over || !screens.resolve.classList.contains("active")) return;
     if (state.proximity >= 100) return scythe();
     if (state.seen >= state.shiftGoal) return shiftComplete(true);
     show("play");
@@ -195,12 +208,11 @@
   }
 
   function scythe() {
-    state.over = true;
-    stopTick();
     shiftComplete(false);
   }
 
   function shiftComplete(won) {
+    if (state.over) return;
     state.over = true;
     stopTick();
     const prev = loadProgress();

@@ -32,6 +32,30 @@ In a real emergency call local emergency services. In the U.S., 988 is the Suici
 Off by default. In-game **AI (optional)** stores an OpenRouter key only in this browser.
 Do not commit API keys.
 
+Generated cases are checked before saving or loading: four complete choices,
+finite numeric scores, one best and one good choice, and scores consistent with
+their quality. Malformed older saved cases are skipped so the built-in game
+continues to work. This checks the game format, not factual accuracy.
+
+## Development checks
+
+Run the dependency-free regression suite with Node.js 20 or newer:
+
+```bash
+node --test tests/*.test.js
+```
+
+In the shared development workspace, run it through the dev container:
+
+```powershell
+docker compose -f ../compose.yaml run --rm --no-deps dev node --test ReaperDelay/tests/game.test.js
+```
+
+The suite covers game completion, repeated input, timer defeat, generated-case
+validation, and offline-cache ownership. Completing a shift records it once;
+a losing choice keeps the end screen visible. The service worker preserves
+other projects' caches on the same GitHub Pages origin.
+
 ## GitHub Pages
 
 Already on: Settings → Pages → Deploy from branch `main` / root.
