@@ -27,15 +27,20 @@ Eight cases per shift. The Reaper creeps every second. Good answers push the fig
 This is a teaching toy, not medical, veterinary, or professional advice.
 In a real emergency call local emergency services. In the U.S., 988 is the Suicide & Crisis Lifeline.
 
-## Optional cheap AI
+### Clinical Triage Scenarios & Visual Polish
 
-Off by default. In-game **AI (optional)** stores an OpenRouter key only in this browser.
-Do not commit API keys.
+The ledger includes medically accurate first aid and emergency response scenarios:
+- **Anaphylaxis (Maya, 22)**: First-line intramuscular epinephrine administration in the lateral thigh vs oral antihistamine delay.
+- **Opioid Overdose (Marcus, 31)**: Nasal naloxone (Narcan) rescue and ventilation vs fatal folk remedies.
+- **Arterial Hemorrhage (Devon, 38)**: Rapid windlass tourniquet placement above the wound vs dangerous loose ligatures.
+- **Severe Hypoglycemia (Clara, 62)**: Nasal/injectable glucagon for neuroglycopenia with impaired swallow reflex vs inappropriate insulin.
+- **Acute Coronary Syndrome (Arthur, 64)**: Chewed non-enteric aspirin, seated rest, and emergent cath lab routing vs "cough CPR" and delays.
+- **Septic Shock (Teresa, 79)**: 1-hour emergent sepsis protocol (blood cultures, broad-spectrum antibiotics, IV fluids) vs outpatient clinic delays.
 
-Generated cases are checked before saving or loading: four complete choices,
-finite numeric scores, one best and one good choice, and scores consistent with
-their quality. Malformed older saved cases are skipped so the built-in game
-continues to work. This checks the game format, not factual accuracy.
+**Visual and Accessibility Enhancements**:
+- **Score Feedback Glow**: Keyframed `@keyframes correctGlow` and `@keyframes choiceGlow` provide immediate luminous feedback on good triage decisions.
+- **Timer Urgency Pulse**: The Reaper figure adopts an animated pulse (`@keyframes timerPulse`) whenever proximity exceeds 65%, visually signaling critical urgency.
+- **Accessible ARIA Standards**: All interactive buttons, action choices, and screen sections provide descriptive `aria-label`, `role="region"`, and `aria-live="polite"` tags for screen readers.
 
 ## Development checks
 

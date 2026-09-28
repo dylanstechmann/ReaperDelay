@@ -124,6 +124,11 @@
     $("lane-fill").style.width = state.proximity + "%";
     const left = 8 + state.proximity * 0.78;
     $("reaper").style.left = "calc(" + left + "% - 12px)";
+    if (state.proximity >= 65) {
+      $("reaper").classList.add("urgent");
+    } else {
+      $("reaper").classList.remove("urgent");
+    }
   }
 
   function nextCase() {
@@ -132,8 +137,8 @@
     if (!state.deck.length) state.deck = shuffle(CASES);
     state.current = state.deck.pop();
     const c = state.current;
-    $("ward-icon").textContent = c.icon || "\ud83d\udd6f\ufe0f";
-    $("case-icon").textContent = c.icon || "\ud83d\udd6f\ufe0f";
+    $("ward-icon").textContent = c.icon || "🕯️";
+    $("case-icon").textContent = c.icon || "🕯️";
     $("case-type").textContent = c.type + " in the ledger";
     $("case-name").textContent = c.name;
     $("case-setup").textContent = c.setup;
@@ -143,6 +148,10 @@
       const b = document.createElement("button");
       b.className = "choice";
       b.textContent = ch.text;
+      if (typeof b.setAttribute === "function") {
+        b.setAttribute("type", "button");
+        b.setAttribute("aria-label", ch.text);
+      }
       b.addEventListener("click", () => pick(ch, c));
       box.appendChild(b);
     });
@@ -160,6 +169,13 @@
       state.saved += 1;
       state.years += delay / 10 + state.streak * 0.15;
       bump(-delay);
+      const sy = $("stat-years");
+      if (sy && sy.classList) {
+        sy.classList.remove("glow");
+        if (typeof sy.offsetWidth === "number") void sy.offsetWidth;
+        sy.classList.add("glow");
+        setTimeout(() => { if (sy.classList) sy.classList.remove("glow"); }, 700);
+      }
     } else {
       state.streak = 0;
       bump(-delay);
